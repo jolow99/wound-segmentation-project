@@ -26,7 +26,7 @@ if __name__=="__main__":
     expt_description = input("Give a description of the experiment [Press 'enter' to skip]: ")
     args = argparser.parse_args()
     args.expt_name = expt_name
-    model = get_model(args.model, vars(args), device="cuda")
+    model = get_model(args.model, vars(args), device=args.device)
     data_filepath = './data/azh_wound_care_center_dataset_patches/'
     data_gen = DataGen(os.path.join(os.getcwd(), data_filepath), split_ratio=0.2)
     train_loader, validation_loader, test_loader = create_dataloaders(data_gen, args.batch_size, args.device)
@@ -36,7 +36,8 @@ if __name__=="__main__":
         validation_loader=validation_loader,
         test_loader=test_loader,
         args=TrainingArguments(**vars(args)),
-        compute_metrics=compute_metrics
+        compute_metrics=compute_metrics,
+        device=args.device
     )
     trainer.train()
     trainer.evaluate()
