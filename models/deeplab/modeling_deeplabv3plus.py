@@ -49,6 +49,7 @@ class DeepLabHead(nn.Module):
         self.bn = nn.BatchNorm2d(256)
         self.relu = nn.ReLU(inplace=True)
         self.last_conv = nn.Conv2d(256, num_classes, 1)
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         x = self.aspp(x)
@@ -56,6 +57,7 @@ class DeepLabHead(nn.Module):
         x = self.bn(x)
         x = self.relu(x)
         x = self.last_conv(x)
+        x = self.sigmoid(x)
         return x
 
 
