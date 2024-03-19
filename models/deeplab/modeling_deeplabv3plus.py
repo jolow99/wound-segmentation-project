@@ -28,8 +28,7 @@ class ASPP(nn.Module):
         # Image pooling
         self.image_pooling = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
-            nn.Conv2d(in_channels, out_channels, 1, bias=False),
-            nn.BatchNorm2d(out_channels),
+            nn.Conv2d(in_channels, out_channels, 1, bias=True),
             nn.ReLU(inplace=True)
         )
 
@@ -73,9 +72,8 @@ class DeepLabV3Plus(nn.Module):
         # Load a pretrained MobileNetV2 model
         self.backbone = models.mobilenet_v2(pretrained=True).features
 
-        # Create the DeepLab head with the number of classes, for example 21 for VOC
-        num_classes = 1
-        self.head = DeepLabHead(1280, num_classes)  # 1280 is the number of output channels from MobileNetV2
+        # Only 1 output class
+        self.head = DeepLabHead(1280, 1)  # 1280 is the number of output channels from MobileNetV2. 
 
     def forward(self, x):
         x = self.backbone(x)
