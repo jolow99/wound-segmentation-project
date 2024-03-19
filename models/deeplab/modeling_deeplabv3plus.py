@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision import models
 
 
 class ASPP(nn.Module):
@@ -66,10 +67,15 @@ class DeepLabHead(nn.Module):
 
 # Construct the DeepLabV3+ model
 class DeepLabV3Plus(nn.Module):
-    def __init__(self, backbone, head):
+    def __init__(self):
         super(DeepLabV3Plus, self).__init__()
-        self.backbone = backbone
-        self.head = head
+        
+        # Load a pretrained MobileNetV2 model
+        self.backbone = models.mobilenet_v2(pretrained=True).features
+
+        # Create the DeepLab head with the number of classes, for example 21 for VOC
+        num_classes = 1
+        self.head = DeepLabHead(1280, num_classes)  # 1280 is the number of output channels from MobileNetV2
 
     def forward(self, x):
         x = self.backbone(x)
