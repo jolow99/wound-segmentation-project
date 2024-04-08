@@ -12,7 +12,7 @@
 - data/ folder for all data files 
 - checkpoints/ folder to store all model checkpoints 
 - logs/ folder to store tensorboard logs 
-
+- evaluation/ folder to store evaluation scripts 
 
 ## Setup 
 Create environment 
@@ -28,5 +28,12 @@ pip install -r requirements.txt
 ## Train model (python script)
 ```
 python train.py --model_name=unet
+```
+
+## Reproduce our results 
+Run the following code block to run evaluation on our test set with all our trained models used in the report. 
+```
+cd evaluation 
+python run_evaluation.py 
 ```
 
