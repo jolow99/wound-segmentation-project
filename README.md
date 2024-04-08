@@ -31,9 +31,34 @@ python train.py --model_name=unet
 ```
 
 ## Reproduce our results 
+### Use our pretrained weights 
 Run the following code block to run evaluation on our test set with all our trained models used in the report. 
 ```
 cd evaluation 
 python run_evaluation.py 
 ```
 
+### Retrain models on your own 
+#### Autoencoder
+```
+python train.py --model_name=simpleunet
+```
+#### Unet 
+```
+python train.py --model_name=unet
+```
+#### Pix2Pix 
+```
+python train.py --model_name=unet
+```
+
+You can find your saved checkpoints and logs at 
+- Logs: logs/{model_name}_{expt_name}/{timestamp}
+- Checkpoints: checkpoints/{model_name}_{expt_name}/{timestamp}
+
+#### Run evaluation
+Paste all the checkpoint paths and logs in evaluation/final_models.json, an example can be found in evaluation/final_models_example.json
+```
+cd evaluation 
+python run_evaluation.py 
+```
