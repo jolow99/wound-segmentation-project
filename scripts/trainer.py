@@ -29,9 +29,9 @@ class Trainer:
         self.test_loader = test_loader
         self.model = model
         self.compute_metrics = compute_metrics
-        self.device = device
         self.criterion = criterion
         self.args = args
+        self.device = device
         self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.writer = SummaryWriter(f'{self.args.logdir}/{self.args.expt_name}/{self.timestamp}')
         self.checkpoint_path = f'{self.args.checkpoint_path}/{self.args.expt_name}/{self.timestamp}'
@@ -58,8 +58,12 @@ class Trainer:
                         epoch_pbar.set_description(f"Batch {batch_number+1}/{len(self.train_loader)}")
                         epoch_pbar.update(1)
                         inputs, labels = inputs.to(self.device), labels.to(self.device)
+                        print("Inputs and labels:")
+                        print(inputs.shape, labels.shape)
                         optimizer.zero_grad()
                         outputs = self.model(inputs)
+                        print("Outputs and labels:")
+                        print(outputs.shape, labels.shape)
                         loss = criterion(outputs, labels)
                         loss.backward()
                         optimizer.step()
@@ -77,7 +81,7 @@ class Trainer:
                     self.writer.add_scalars('Training vs. Validation Loss',{'Training':train_loss,'Validation':validation_loss},epoch + 1)
                     self.writer.flush()
                     if validation_loss < best_validation_loss:
-                        torch.save(self.model.state_dict(), f'{checkpoint_path}/best_model.pth')
+                        torch.save(self.model.state_dict(), f'{self.checkpoint_path}/best_model.pth')
                         best_validation_loss = validation_loss
 
                     pbar.update(1)
