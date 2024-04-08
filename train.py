@@ -14,8 +14,9 @@ argparser.add_argument("--batch_size", type=int, default=8, help="Batch size")
 argparser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate")
 argparser.add_argument("--logdir", type=str, default="logs", help="Path to save results")
 argparser.add_argument("--checkpoint_path", type=str, default="checkpoints", help="Path to save model")
+argparser.add_argument("--save_model", type=bool, default=True, help="Boolean value, set to true to save model during training")
 # argparser.add_argument("--expt_name", type=str, default=None, help="Name of the saved model")
-argparser.add_argument("--device", type=str, default="cuda", help="Device to use for training")
+argparser.add_argument("--device", type=str, default="mps", help="Device to use for training")
 
 # python train.py --model unet
 
@@ -25,7 +26,8 @@ if __name__=="__main__":
         expt_name = "temp"
     expt_description = input("Give a description of the experiment [Press 'enter' to skip]: ")
     args = argparser.parse_args()
-    args.expt_name = expt_name
+    args.expt_name = args.model + "_" + expt_name
+    args.expt_description = expt_description
     model = get_model(args.model, vars(args), device=args.device)
     data_filepath = './data/azh_wound_care_center_dataset_patches/'
     data_gen = DataGen(os.path.join(os.getcwd(), data_filepath), split_ratio=0.2)

@@ -2,8 +2,6 @@
 import sys 
 import torch
 sys.path.append('..')
-from models.unet.modeling_simple_unet import SimpleUNet
-from models.unet.modeling_unet import UNet
 from .training_args import TrainingArguments
 from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
@@ -35,6 +33,12 @@ class Trainer:
         self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.writer = SummaryWriter(f'{self.args.logdir}/{self.args.expt_name}/{self.timestamp}')
         self.checkpoint_path = f'{self.args.checkpoint_path}/{self.args.expt_name}/{self.timestamp}'
+        self.writer.add_text("description", self.args.expt_description, 0)
+        self.writer.add_text("expt_name", str(self.args.expt_name), 0)
+        self.writer.flush()
+
+    def load(self, path): 
+        self.model.load_state_dict(torch.load(path))
 
     def train(self): 
         optimizer = self.args.optim(self.model.parameters(), lr=self.args.learning_rate)
@@ -58,12 +62,12 @@ class Trainer:
                         epoch_pbar.set_description(f"Batch {batch_number+1}/{len(self.train_loader)}")
                         epoch_pbar.update(1)
                         inputs, labels = inputs.to(self.device), labels.to(self.device)
-                        print("Inputs and labels:")
-                        print(inputs.shape, labels.shape)
+                        # print("Inputs and labels:")
+                        # print(inputs.shape, labels.shape)
                         optimizer.zero_grad()
                         outputs = self.model(inputs)
-                        print("Outputs and labels:")
-                        print(outputs.shape, labels.shape)
+                        # print("Outputs and labels:")
+                        # print(outputs.shape, labels.shape)
                         loss = criterion(outputs, labels)
                         loss.backward()
                         optimizer.step()
@@ -81,7 +85,8 @@ class Trainer:
                     self.writer.add_scalars('Training vs. Validation Loss',{'Training':train_loss,'Validation':validation_loss},epoch + 1)
                     self.writer.flush()
                     if validation_loss < best_validation_loss:
-                        torch.save(self.model.state_dict(), f'{self.checkpoint_path}/best_model.pth')
+                        if self.args.save_model:
+                            torch.save(self.model.state_dict(), f'{self.checkpoint_path}/best_model.pth')
                         best_validation_loss = validation_loss
 
                     pbar.update(1)
