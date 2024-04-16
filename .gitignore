@@ -5,3 +5,4 @@ __pycache__/
 venv/
 models/pix2pix/logs/
 models/pix2pix/outputs/training_checkpoints/
+evaluation/outputs
