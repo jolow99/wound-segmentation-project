@@ -41,7 +41,7 @@ class Trainer:
         self.model.load_state_dict(torch.load(path))
 
     def train(self): 
-        optimizer = self.args.optim(self.model.parameters(), lr=self.args.learning_rate)
+        optimizer = self.args.optim(self.model.parameters(), lr=self.args.learning_rate, weight_decay=self.args.weight_decay)
         # criterion = torch.nn.BCELoss()
         criterion = self.criterion
         
