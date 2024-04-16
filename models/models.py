@@ -1,7 +1,7 @@
 
 import sys 
 sys.path.append('..')
-from models.unet.modeling_autoencoder import Autoencoder
+from models.autoencoder.modeling_autoencoder import Autoencoder
 from models.unet.configuration_unet import UNetConfig
 from models.unet.modeling_unet import UNet
 from models.unet.modeling_unet_ensemble import EnsembleUNet
