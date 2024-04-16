@@ -88,6 +88,7 @@ def evaluate_model_name(model_name, model_path, args):
             pbar.update(1)
             inputs, labels = inputs.to(args.device), labels.to(args.device)
             outputs = model(inputs)
+            outputs = torch.nn.Sigmoid()(outputs)
             if i < 5:
                 save_image(inputs[0], outputs[0], labels[0], f'outputs/{model_name}_{i}_output.png')
                 # save_image(labels[0], f'outputs/{model_name}_{i}_label.png')

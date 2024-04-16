@@ -67,8 +67,6 @@ class Trainer:
                         # print(inputs.shape, labels.shape)
                         optimizer.zero_grad()
                         outputs = self.model(inputs)
-                        # print("Outputs and labels:")
-                        # print(outputs.shape, labels.shape)
                         loss = criterion(outputs, labels)
                         loss.backward()
                         optimizer.step()
