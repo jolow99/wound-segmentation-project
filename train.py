@@ -17,6 +17,7 @@ argparser.add_argument("--checkpoint_path", type=str, default="checkpoints", hel
 argparser.add_argument("--save_model", type=bool, default=True, help="Boolean value, set to true to save model during training")
 # argparser.add_argument("--expt_name", type=str, default=None, help="Name of the saved model")
 argparser.add_argument("--device", type=str, default="mps", help="Device to use for training")
+argparser.add_argument("--weight_decay", type=float, default=0, help="Weight decay")
 
 # python train.py --model unet
 
