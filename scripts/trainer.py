@@ -20,7 +20,7 @@ class Trainer:
         compute_metrics=None,
         device="cuda", 
         args=TrainingArguments(),
-        criterion=torch.nn.BCELoss()
+        criterion=torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([2.0]).to("mps"))
     ): 
         self.train_loader = train_loader
         self.validation_loader = validation_loader
@@ -51,11 +51,12 @@ class Trainer:
             os.makedirs(self.checkpoint_path)
         print("logging path: ", f'{self.args.logdir}/{self.args.expt_name}/{self.timestamp}')
         print("checkpoint path: ", self.checkpoint_path)
-        
+        print("Logging to tensorboard")
         with tqdm(range(self.args.num_train_epochs), colour="green", desc="Epochs", leave=True) as pbar:
             for epoch in range(self.args.num_train_epochs):
                 pbar.set_description(f"Epoch {epoch+1}/{self.args.num_train_epochs}")
                 train_loss = 0
+
                 with tqdm(range(len(self.train_loader)), colour="magenta", desc=f"Epoch {epoch}", leave=False) as epoch_pbar:
                     self.model.train()
                     for batch_number, (inputs, labels) in enumerate(self.train_loader):
@@ -66,8 +67,6 @@ class Trainer:
                         # print(inputs.shape, labels.shape)
                         optimizer.zero_grad()
                         outputs = self.model(inputs)
-                        # print("Outputs and labels:")
-                        # print(outputs.shape, labels.shape)
                         loss = criterion(outputs, labels)
                         loss.backward()
                         optimizer.step()

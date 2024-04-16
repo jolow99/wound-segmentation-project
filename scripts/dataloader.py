@@ -56,16 +56,6 @@ class DataGen:
         random.shuffle(combined)
         return zip(*combined)
 
-    # @staticmethod
-    # def change_color_space(image, label, color_space):
-    #     if color_space.lower() is 'hsi' or 'hsv':
-    #         image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    #         label = cv2.cvtColor(label, cv2.COLOR_BGR2HSV)
-    #     elif color_space.lower() is 'lab':
-    #         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
-    #         label = cv2.cvtColor(label, cv2.COLOR_BGR2LAB)
-    #     return image, label
-
 def create_dataloaders(data_gen, batch_size, device):
     # Assuming data_gen is an instance of the modified DataGen class or equivalent functionality
     transform = transforms.Compose([

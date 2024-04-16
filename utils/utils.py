@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import os 
 
+np.random.seed(42)
+
 def normalize(arr):
     diff = np.amax(arr) - np.amin(arr)
     diff = 255 if diff == 0 else diff
