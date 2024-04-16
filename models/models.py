@@ -7,6 +7,8 @@ from models.unet.modeling_unet import UNet
 from models.deeplab.modeling_deeplabv3plus import DeepLabV3Plus
 from models.segnet.modeling_segnet import SegNet
 from models.fcn.modeling_fcn import FCN_Vgg16_16s
+from models.segformer.configuration_segformer import SegformerConfig
+from models.segformer.modeling_segformer import SegFormer
 
 #dont use _ for model names
 def get_model(model_name, config, device="cuda"): 
@@ -22,4 +24,9 @@ def get_model(model_name, config, device="cuda"):
         model = SegNet().to(device)
     elif model_name == 'fcn': 
         model = FCN_Vgg16_16s().to(device)
+    elif model_name == "segformer": 
+        print("initializing segformer")
+        config = SegformerConfig(**config)
+        model = SegFormer(config).to(device)
+        print("segformer initialized")
     return model

@@ -70,4 +70,4 @@ class UNet(nn.Module):
 
         x = self.outc(x)
         # print(x.shape, 'line75')
-        return torch.sigmoid(x)  # Use sigmoid to match Keras' output
+        return x  # Use sigmoid to match Keras' output

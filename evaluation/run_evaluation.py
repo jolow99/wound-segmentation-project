@@ -11,6 +11,7 @@ from tqdm import tqdm
 from scripts.metrics import compute_metrics
 from utils.utils import EvalPrediction
 import numpy as np
+import matplotlib.pyplot as plt
 
     
 # Read logged information
@@ -43,7 +44,7 @@ argparser.add_argument("--data", type=str, default="../data/azh_wound_care_cente
 argparser.add_argument("--device", type=str, default="mps", help="Device to use for training")
 argparser.add_argument("--logdir", type=str, default="../logs", help="Path to save results")
 argparser.add_argument("--checkpoint_path", type=str, default="../checkpoints", help="Path to save model")
-argparser.add_argument("--batch_size", type=int, default=8, help="Batch size")
+argparser.add_argument("--batch_size", type=int, default=4, help="Batch size")
 
 def evaluate_model_name(model_name, model_path, args): 
     print(f"Evaluating model: {model_name}")
@@ -59,11 +60,37 @@ def evaluate_model_name(model_name, model_path, args):
     outputs_all = []
     labels_all = []
 
+    def save_image(input, output, label, filename):
+        # concatenate input, output, label and save as image    
+        input = input.squeeze(0)
+        print(input.shape)
+        input = input.permute(1,2,0).detach().cpu().numpy()
+        output = output.squeeze(0)
+        output = torch.stack([output, output, output], dim=0)
+        output = torch.nn.Sigmoid()(output)
+        # output = (output > 0.5).float()
+        output = output.permute(1,2,0).detach().cpu().numpy()
+        print(output)
+        plt.imshow(output)
+        print(output.shape)
+        label = label.squeeze(0)
+        label = torch.stack([label, label, label], dim=0)
+        label = label.permute(1,2,0).detach().cpu().numpy()
+        print(label.shape)
+        output = np.concatenate([input, output, label], axis=1)
+        if not os.path.exists("/".join(filename.split('/')[:-1])):
+            os.makedirs("/".join(filename.split('/')[:-1]))
+        plt.imsave(filename, output)
+
     with tqdm(range(len(test_loader)), colour="magenta", desc="Testing", leave=True) as pbar:
         for i, (inputs, labels) in enumerate(test_loader):
+            # save 5 outputs to folder
             pbar.update(1)
             inputs, labels = inputs.to(args.device), labels.to(args.device)
             outputs = model(inputs)
+            if i < 5:
+                save_image(inputs[0], outputs[0], labels[0], f'outputs/{model_name}_{i}_output.png')
+                # save_image(labels[0], f'outputs/{model_name}_{i}_label.png')
             outputs_all.append(outputs.detach().cpu().numpy())
             labels_all.append(labels.detach().cpu().numpy())
 
