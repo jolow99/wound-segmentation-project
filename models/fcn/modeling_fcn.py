@@ -7,31 +7,31 @@ class FCN_Vgg16_16s(nn.Module):
         super(FCN_Vgg16_16s, self).__init__()
 
         # Block 1
-        self.block1_conv1 = nn.Conv2d(3, 64, 3, padding=1, bias=False)
-        self.block1_conv2 = nn.Conv2d(64, 64, 3, padding=1, bias=False)
+        self.block1_conv1 = nn.Conv2d(3, 64, 3, padding='same', bias=False)
+        self.block1_conv2 = nn.Conv2d(64, 64, 3, padding='same', bias=False)
         self.block1_pool = nn.MaxPool2d(2, stride=2)
         
         # Block 2
-        self.block2_conv1 = nn.Conv2d(64, 128, 3, padding=1, bias=False)
-        self.block2_conv2 = nn.Conv2d(128, 128, 3, padding=1, bias=False)
+        self.block2_conv1 = nn.Conv2d(64, 128, 3, padding='same', bias=False)
+        self.block2_conv2 = nn.Conv2d(128, 128, 3, padding='same', bias=False)
         self.block2_pool = nn.MaxPool2d(2, stride=2)
         
         # Block 3
-        self.block3_conv1 = nn.Conv2d(128, 256, 3, padding=1, bias=False)
-        self.block3_conv2 = nn.Conv2d(256, 256, 3, padding=1, bias=False)
-        self.block3_conv3 = nn.Conv2d(256, 256, 3, padding=1, bias=False)
+        self.block3_conv1 = nn.Conv2d(128, 256, 3, padding='same', bias=False)
+        self.block3_conv2 = nn.Conv2d(256, 256, 3, padding='same', bias=False)
+        self.block3_conv3 = nn.Conv2d(256, 256, 3, padding='same', bias=False)
         self.block3_pool = nn.MaxPool2d(2, stride=2)
         
         # Block 4
-        self.block4_conv1 = nn.Conv2d(256, 512, 3, padding=1, bias=False)
-        self.block4_conv2 = nn.Conv2d(512, 512, 3, padding=1, bias=False)
-        self.block4_conv3 = nn.Conv2d(512, 512, 3, padding=1, bias=False)
+        self.block4_conv1 = nn.Conv2d(256, 512, 3, padding='same', bias=False)
+        self.block4_conv2 = nn.Conv2d(512, 512, 3, padding='same', bias=False)
+        self.block4_conv3 = nn.Conv2d(512, 512, 3, padding='same', bias=False)
         self.block4_pool = nn.MaxPool2d(2, stride=2)
         
         # Block 5
-        self.block5_conv1 = nn.Conv2d(512, 512, 3, padding=1, bias=False)
-        self.block5_conv2 = nn.Conv2d(512, 512, 3, padding=1, bias=False)
-        self.block5_conv3 = nn.Conv2d(512, 512, 3, padding=1, bias=False)
+        self.block5_conv1 = nn.Conv2d(512, 512, 3, padding='same', bias=False)
+        self.block5_conv2 = nn.Conv2d(512, 512, 3, padding='same', bias=False)
+        self.block5_conv3 = nn.Conv2d(512, 512, 3, padding='same', bias=False)
         
         # Convolutional layers transferred from fully-connected layers
         self.fc1 = nn.Conv2d(512, 4096, 7, padding=3, dilation=2, bias=False)
