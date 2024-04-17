@@ -1,11 +1,7 @@
 import torch
 import torch.nn as nn
 
-import torch
-import torch.nn as nn
-
-import torch
-import torch.nn as nn
+import einops
 
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels, batch_norm=True, dropout=0.0):
@@ -74,9 +70,9 @@ class UNet(nn.Module):
         x = self.outc(x)
         return x 
 
-class EnsembleUNet(nn.Module):
+class CircleNet(nn.Module):
   def __init__(self, config):
-    super(EnsembleUNet, self).__init__()
+    super(CircleNet, self).__init__()
     self.unet1 = UNet(config)
     self.unet2 = UNet(config)
     self.final_conv = nn.Conv2d(config.n_classes * 2, config.n_classes, kernel_size=1)  # Adjust based on your n_classes

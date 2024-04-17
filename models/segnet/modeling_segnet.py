@@ -2,12 +2,12 @@ import torch
 import torch.nn as nn
 
 class SegNet(nn.Module):
-    def __init__(self, n_filters=32, input_dim_x=224, input_dim_y=224, num_channels=3):
+    def __init__(self, config):
         super(SegNet, self).__init__()
-        self.n_filters = n_filters
-        self.input_dim_x = input_dim_x
-        self.input_dim_y = input_dim_y
-        self.num_channels = num_channels
+        self.n_filters = config.n_filters
+        self.input_dim_x = config.input_dim_x
+        self.input_dim_y = config.input_dim_y
+        self.num_channels = config.num_channels
 
         self.encoder_conv1 = nn.Conv2d(num_channels, n_filters, kernel_size=9, padding=4)
         self.encoder_conv2 = nn.Conv2d(n_filters, n_filters, kernel_size=5, padding=2)

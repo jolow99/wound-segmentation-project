@@ -18,6 +18,8 @@ argparser.add_argument("--save_model", type=bool, default=True, help="Boolean va
 # argparser.add_argument("--expt_name", type=str, default=None, help="Name of the saved model")
 argparser.add_argument("--device", type=str, default="mps", help="Device to use for training")
 argparser.add_argument("--weight_decay", type=float, default=0, help="Weight decay")
+argparser.add_argument("--from_checkpoint", type=str, default=None, help="Path to checkpoint to load model from")
+argparser.add_argument("--full_train_data", type=str, default=False, help="True if use full training data")
 
 # python train.py --model unet
 
@@ -31,7 +33,10 @@ if __name__=="__main__":
     args.expt_description = expt_description
     model = get_model(args.model, vars(args), device=args.device)
     data_filepath = './data/azh_wound_care_center_dataset_patches/'
-    data_gen = DataGen(os.path.join(os.getcwd(), data_filepath), split_ratio=0.2)
+    if args.full_train_data:
+        data_gen = DataGen(os.path.join(os.getcwd(), data_filepath), split_ratio=0)
+    else:
+        data_gen = DataGen(os.path.join(os.getcwd(), data_filepath), split_ratio=0.2)
     train_loader, validation_loader, test_loader = create_dataloaders(data_gen, args.batch_size, args.device)
     trainer = Trainer(
         model,

@@ -18,21 +18,15 @@ class UNetConfig():
     """
     def __init__(
         self,
-        in_channels=3,
-        out_channels=1,
-        n_classes=1,
-        depth=5,
-        n_filters=64,
-        batch_norm=True,
-        dropout=0,
+        n_filters=32, 
+        input_dim_x=224, 
+        input_dim_y=224, 
+        num_channels=3,
         **kwargs
     ):
-        self.in_channels = in_channels
-        self.out_channels = out_channels
-        self.n_classes = n_classes
-        self.depth = depth
         self.n_filters = n_filters
-        self.batch_norm = batch_norm
-        self.dropout = dropout
+        self.input_dim_x = input_dim_x
+        self.input_dim_y = input_dim_y
+        self.num_channels = num_channels
         for k, v in kwargs.items():
             setattr(self, k, v)

@@ -4,8 +4,10 @@ sys.path.append('..')
 from models.autoencoder.modeling_autoencoder import Autoencoder
 from models.unet.configuration_unet import UNetConfig
 from models.unet.modeling_unet import UNet
-from models.unet.modeling_unet_ensemble import EnsembleUNet
-from models.unet.modeling_unet_crf import UNetCRF
+from models.circlenet.modeling_circlenet import CircleNet
+from models.circlenet.configuration_circlenet import CircleNetConfig
+from models.mixcirclenet.modeling_mixcirclenet import MixCircleNet
+from models.mixcirclenet.configuration_mixcirclenet import MixCircleNetConfig
 from models.deeplab.modeling_deeplabv3plus import DeepLabV3Plus
 from models.segnet.modeling_segnet import SegNet
 from models.fcn.modeling_fcn import FCN_Vgg16_16s
@@ -20,9 +22,12 @@ def get_model(model_name, config, device="cuda"):
     elif model_name == 'autoencoder':
         config = UNetConfig(**config)
         model = Autoencoder(config).to(device)
-    elif model_name == 'unetensemble':
-        config = UNetConfig(**config)
-        model = EnsembleUNet(config).to(device)
+    elif model_name == 'circlenet':
+        config = CircleNetConfig(**config)
+        model = CircleNet(config).to(device)
+    elif model_name == 'mixcirclenet':
+        config = MixCircleNetConfig(**config)
+        model = MixCircleNet(config).to(device)
     elif model_name == 'deeplabv3plus': 
         model = DeepLabV3Plus().to(device)
     elif model_name == 'segnet':
@@ -30,8 +35,6 @@ def get_model(model_name, config, device="cuda"):
     elif model_name == 'fcn': 
         model = FCN_Vgg16_16s().to(device)
     elif model_name == "segformer": 
-        print("initializing segformer")
         config = SegformerConfig(**config)
         model = SegFormer(config).to(device)
-        print("segformer initialized")
     return model

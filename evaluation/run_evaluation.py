@@ -60,23 +60,16 @@ def evaluate_model_name(model_name, model_path, args):
     outputs_all = []
     labels_all = []
 
-    def save_image(input, output, label, filename):
-        # concatenate input, output, label and save as image    
+    def save_image(input, output, label, filename):  
         input = input.squeeze(0)
-        print(input.shape)
         input = input.permute(1,2,0).detach().cpu().numpy()
         output = output.squeeze(0)
         output = torch.stack([output, output, output], dim=0)
         output = torch.nn.Sigmoid()(output)
-        # output = (output > 0.5).float()
         output = output.permute(1,2,0).detach().cpu().numpy()
-        print(output)
-        plt.imshow(output)
-        print(output.shape)
         label = label.squeeze(0)
         label = torch.stack([label, label, label], dim=0)
         label = label.permute(1,2,0).detach().cpu().numpy()
-        print(label.shape)
         output = np.concatenate([input, output, label], axis=1)
         if not os.path.exists("/".join(filename.split('/')[:-1])):
             os.makedirs("/".join(filename.split('/')[:-1]))

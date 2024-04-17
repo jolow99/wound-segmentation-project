@@ -85,4 +85,4 @@ class FCN_Vgg16_16s(nn.Module):
         x = F.interpolate(x, size=(224, 224), mode='bilinear', align_corners=False)
         # Output size: 224x224
 
-        return torch.sigmoid(x)
+        return x
