@@ -30,35 +30,12 @@ pip install -r requirements.txt
 python train.py --model_name=unet
 ```
 
-## Reproduce our results 
-### Use our pretrained weights 
-Run the following code block to run evaluation on our test set with all our trained models used in the report. 
+## Evaluate your models  
+Run the following code block to run evaluation on your previously trained models
 ```
 cd evaluation 
 python run_evaluation.py 
 ```
-
-    if model_name == 'unet': 
-        config = UNetConfig(**config)
-        model = UNet(config).to(device)
-    elif model_name == 'autoencoder':
-        config = UNetConfig(**config)
-        model = Autoencoder(config).to(device)
-    elif model_name == 'circlenet':
-        config = CircleNetConfig(**config)
-        model = CircleNet(config).to(device)
-    elif model_name == 'mixcirclenet':
-        config = MixCircleNetConfig(**config)
-        model = MixCircleNet(config).to(device)
-    elif model_name == 'deeplabv3plus': 
-        model = DeepLabV3Plus().to(device)
-    elif model_name == 'segnet':
-        model = SegNet().to(device)
-    elif model_name == 'fcn': 
-        model = FCN_Vgg16_16s().to(device)
-    elif model_name == "segformer": 
-        config = SegformerConfig(**config)
-        model = SegFormer(config).to(device)
 
 ### Retrain models on your own 
 #### Autoencoder
