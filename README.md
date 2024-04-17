@@ -30,13 +30,6 @@ pip install -r requirements.txt
 python train.py --model_name=unet
 ```
 
-## Evaluate your models  
-Run the following code block to run evaluation on your previously trained models
-```
-cd evaluation 
-python run_evaluation.py 
-```
-
 ### Retrain models on your own 
 #### Autoencoder
 ```
