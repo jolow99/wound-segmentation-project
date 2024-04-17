@@ -38,19 +38,58 @@ cd evaluation
 python run_evaluation.py 
 ```
 
+    if model_name == 'unet': 
+        config = UNetConfig(**config)
+        model = UNet(config).to(device)
+    elif model_name == 'autoencoder':
+        config = UNetConfig(**config)
+        model = Autoencoder(config).to(device)
+    elif model_name == 'circlenet':
+        config = CircleNetConfig(**config)
+        model = CircleNet(config).to(device)
+    elif model_name == 'mixcirclenet':
+        config = MixCircleNetConfig(**config)
+        model = MixCircleNet(config).to(device)
+    elif model_name == 'deeplabv3plus': 
+        model = DeepLabV3Plus().to(device)
+    elif model_name == 'segnet':
+        model = SegNet().to(device)
+    elif model_name == 'fcn': 
+        model = FCN_Vgg16_16s().to(device)
+    elif model_name == "segformer": 
+        config = SegformerConfig(**config)
+        model = SegFormer(config).to(device)
+
 ### Retrain models on your own 
 #### Autoencoder
 ```
-python train.py --model_name=simpleunet
+python train.py --model simpleunet --num_train_epochs 50
 ```
 #### Unet 
 ```
-python train.py --model_name=unet
+python train.py --model unet --num_train_epochs 50
 ```
-#### Pix2Pix 
+#### CircleNet
 ```
-python train.py --model_name=unet
+python train.py --model circlenet --num_train_epochs 50
 ```
+
+#### MixCircleNet
+```
+python train.py --model_name=mixcirclenet --num_train_epochs 50
+```
+#### DeepLabV3Plus 
+python train.py --model deeplabv3plus --num_train_epochs 50
+
+#### SegNet
+python train.py --model segnet --num_train_epochs 50
+
+#### Fully Convolutional Network 
+python train.py --model fcn --num_train_epochs 50 
+
+#### Segformer 
+python train.py --model segformer --num_train_epochs 10 
+
 
 You can find your saved checkpoints and logs at 
 - Logs: logs/{model_name}_{expt_name}/{timestamp}
