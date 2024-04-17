@@ -79,16 +79,21 @@ python train.py --model circlenet --num_train_epochs 50
 python train.py --model_name=mixcirclenet --num_train_epochs 50
 ```
 #### DeepLabV3Plus 
+```
 python train.py --model deeplabv3plus --num_train_epochs 50
-
+```
 #### SegNet
+```
 python train.py --model segnet --num_train_epochs 50
-
+```
 #### Fully Convolutional Network 
+```
 python train.py --model fcn --num_train_epochs 50 
-
+```
 #### Segformer 
+```
 python train.py --model segformer --num_train_epochs 10 
+```
 
 
 You can find your saved checkpoints and logs at 
