@@ -70,8 +70,8 @@ You can find your saved checkpoints and logs at
 - Logs: logs/{model_name}_{expt_name}/{timestamp}
 - Checkpoints: checkpoints/{model_name}_{expt_name}/{timestamp}
 
-#### Run evaluation
-Paste all the checkpoint paths and logs in evaluation/final_models.json, an example can be found in evaluation/final_models_example.json
+## Evaluation
+Paste relative directory of the checkpoint paths in evaluation/final_models.json, an example can be found in evaluation/final_models_example.json
 ```
 cd evaluation 
 python run_evaluation.py 
