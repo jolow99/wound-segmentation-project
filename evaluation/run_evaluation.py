@@ -78,6 +78,7 @@ if __name__ == "__main__":
     for model_run in model_runs: 
         print("Evaluating model: ", model_run)
         model_name = model_run.split('_')[0]
+        model_name = "pix2pix"
         metrics = evaluate_model_name(model_name, model_run, args)
         print(f'{model_name} metrics: {metrics}')
         expt_name = model_run.split('/')[0]
