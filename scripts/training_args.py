@@ -15,6 +15,7 @@ class TrainingArguments:
         adam_beta2=0.999,
         adam_epsilon=1e-8,
         optim=torch.optim.AdamW,
+        full_train_data=False,
         **kwargs
     ):
         self.output_dir = output_dir
@@ -29,6 +30,9 @@ class TrainingArguments:
         self.adam_beta2 = adam_beta2
         self.adam_epsilon = adam_epsilon
         self.optim = optim
+        self.weight_decay = weight_decay
+        self.full_train_data = full_train_data
+
         for k, v in kwargs.items():
             setattr(self, k, v)
 

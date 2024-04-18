@@ -1,4 +1,4 @@
-class UNetConfig():
+class MixCircleNetConfig():
     r"""
     Args:
         in_channels (`int`, *optional*, defaults to `3`):

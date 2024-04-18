@@ -1,4 +1,4 @@
-# 60.004 ADL Project 
+# 60.001 ADL Project 
 
 ## Authors of this repository 
 1. Clarence Lee, 1005266
@@ -30,34 +30,48 @@ pip install -r requirements.txt
 python train.py --model_name=unet
 ```
 
-## Reproduce our results 
-### Use our pretrained weights 
-Run the following code block to run evaluation on our test set with all our trained models used in the report. 
-```
-cd evaluation 
-python run_evaluation.py 
-```
-
 ### Retrain models on your own 
 #### Autoencoder
 ```
-python train.py --model_name=simpleunet
+python train.py --model simpleunet --num_train_epochs 50
 ```
 #### Unet 
 ```
-python train.py --model_name=unet
+python train.py --model unet --num_train_epochs 50
 ```
-#### Pix2Pix 
+#### CircleNet
 ```
-python train.py --model_name=unet
+python train.py --model circlenet --num_train_epochs 50
 ```
+
+#### MixCircleNet
+```
+python train.py --model_name=mixcirclenet --num_train_epochs 50
+```
+#### DeepLabV3Plus 
+```
+python train.py --model deeplabv3plus --num_train_epochs 50
+```
+#### SegNet
+```
+python train.py --model segnet --num_train_epochs 50
+```
+#### Fully Convolutional Network 
+```
+python train.py --model fcn --num_train_epochs 50 
+```
+#### Segformer 
+```
+python train.py --model segformer --num_train_epochs 10 
+```
+
 
 You can find your saved checkpoints and logs at 
 - Logs: logs/{model_name}_{expt_name}/{timestamp}
 - Checkpoints: checkpoints/{model_name}_{expt_name}/{timestamp}
 
-#### Run evaluation
-Paste all the checkpoint paths and logs in evaluation/final_models.json, an example can be found in evaluation/final_models_example.json
+## Evaluation
+Paste relative directory of the checkpoint paths in evaluation/final_models.json, an example can be found in evaluation/final_models_example.json
 ```
 cd evaluation 
 python run_evaluation.py 

@@ -10,6 +10,8 @@ import os
 from utils.utils import EvalPrediction
 import numpy as np
 
+
+
 class Trainer: 
     def __init__(
         self, 
@@ -20,7 +22,7 @@ class Trainer:
         compute_metrics=None,
         device="cuda", 
         args=TrainingArguments(),
-        criterion=torch.nn.BCELoss()
+        criterion=torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([2.0]).to("mps"))
     ): 
         self.train_loader = train_loader
         self.validation_loader = validation_loader
@@ -40,8 +42,16 @@ class Trainer:
     def load(self, path): 
         self.model.load_state_dict(torch.load(path))
 
+    def load_from_checkpoint(self, checkpoint_path):
+        print(os.path.join(os.getcwd(),checkpoint_path))
+        if os.path.exists(os.path.join(os.getcwd(),checkpoint_path)):
+            self.model.load_state_dict(torch.load(checkpoint_path))
+            print(f"Model weights loaded from checkpoint: {checkpoint_path}")
+        else:
+            print(f"No checkpoint found at: {checkpoint_path}")
+
     def train(self): 
-        optimizer = self.args.optim(self.model.parameters(), lr=self.args.learning_rate)
+        optimizer = self.args.optim(self.model.parameters(), lr=self.args.learning_rate, weight_decay=self.args.weight_decay)
         # criterion = torch.nn.BCELoss()
         criterion = self.criterion
         
@@ -51,11 +61,16 @@ class Trainer:
             os.makedirs(self.checkpoint_path)
         print("logging path: ", f'{self.args.logdir}/{self.args.expt_name}/{self.timestamp}')
         print("checkpoint path: ", self.checkpoint_path)
-        
+        print("Logging to tensorboard")
+
+        if self.args.from_checkpoint:
+            self.load_from_checkpoint(self.args.from_checkpoint)
+
         with tqdm(range(self.args.num_train_epochs), colour="green", desc="Epochs", leave=True) as pbar:
             for epoch in range(self.args.num_train_epochs):
                 pbar.set_description(f"Epoch {epoch+1}/{self.args.num_train_epochs}")
                 train_loss = 0
+
                 with tqdm(range(len(self.train_loader)), colour="magenta", desc=f"Epoch {epoch}", leave=False) as epoch_pbar:
                     self.model.train()
                     for batch_number, (inputs, labels) in enumerate(self.train_loader):
@@ -66,8 +81,6 @@ class Trainer:
                         # print(inputs.shape, labels.shape)
                         optimizer.zero_grad()
                         outputs = self.model(inputs)
-                        # print("Outputs and labels:")
-                        # print(outputs.shape, labels.shape)
                         loss = criterion(outputs, labels)
                         loss.backward()
                         optimizer.step()
@@ -84,7 +97,12 @@ class Trainer:
                             validation_loss += loss.item() * inputs.size(0)
                     self.writer.add_scalars('Training vs. Validation Loss',{'Training':train_loss,'Validation':validation_loss},epoch + 1)
                     self.writer.flush()
-                    if validation_loss < best_validation_loss:
+                    
+                    if self.args.full_train_data:
+                        print("Using full data")
+                        if self.args.save_model:
+                            torch.save(self.model.state_dict(), f'{self.checkpoint_path}/best_model.pth')
+                    elif validation_loss < best_validation_loss:
                         if self.args.save_model:
                             torch.save(self.model.state_dict(), f'{self.checkpoint_path}/best_model.pth')
                         best_validation_loss = validation_loss

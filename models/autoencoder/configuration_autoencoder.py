@@ -22,9 +22,9 @@ class UNetConfig():
         out_channels=1,
         n_classes=1,
         depth=5,
-        n_filters=64,
+        n_filters=128,
         batch_norm=True,
-        dropout=0,
+        dropout=0.1,
         **kwargs
     ):
         self.in_channels = in_channels

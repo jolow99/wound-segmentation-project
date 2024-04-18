@@ -1,4 +1,4 @@
-class UNetConfig():
+class CircleNetConfig():
     r"""
     Args:
         in_channels (`int`, *optional*, defaults to `3`):
