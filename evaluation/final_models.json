@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 ["pix2pix/20240417-210133" , "pix2pix/20240417-212539", "pix2pix/20240417-215032", "pix2pix/20240417-221619", "pix2pix/20240417-224030", "pix2pix/20240417-230924"]
+=======
+["autoencoder_autoencoder/20240417_222558", "segnet_segnet/20240417_212642", "fcn_fcn/20240417_232501", "unet_unet/20240417_031427", "segformer_segformer/20240417_124908", "pix2pix_pix2pix/20240417_044752","deeplabv3plus_deeplabv3plus/20240417_205119","circlenet_circlenet/20240417_044752","mixcirclenet_mixcirclenet/20240417_221609"]
+>>>>>>> d455b14 (feat:Consolidate scripts for our best models)

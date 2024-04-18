@@ -65,8 +65,9 @@ def evaluate_model_name(model_name, model_path, args):
         input = input.permute(1,2,0).detach().cpu().numpy()
         output = output.squeeze(0)
         output = torch.stack([output, output, output], dim=0)
-        output = torch.nn.Sigmoid()(output)
+        # output = torch.nn.Sigmoid()(output)
         output = output.permute(1,2,0).detach().cpu().numpy()
+        output = (output > 0.5).astype(np.float32)
         label = label.squeeze(0)
         label = torch.stack([label, label, label], dim=0)
         label = label.permute(1,2,0).detach().cpu().numpy()
@@ -81,7 +82,8 @@ def evaluate_model_name(model_name, model_path, args):
             pbar.update(1)
             inputs, labels = inputs.to(args.device), labels.to(args.device)
             outputs = model(inputs)
-            outputs = torch.nn.Sigmoid()(outputs)
+            if model_name != 'pix2pix':
+                outputs = torch.nn.Sigmoid()(outputs)
             if i < 5:
                 save_image(inputs[0], outputs[0], labels[0], f'outputs/{model_name}_{i}_output.png')
                 # save_image(labels[0], f'outputs/{model_name}_{i}_label.png')
@@ -102,7 +104,7 @@ if __name__ == "__main__":
         model_name = "pix2pix"
         metrics = evaluate_model_name(model_name, model_run, args)
         print(f'{model_name} metrics: {metrics}')
-        expt_name = model_run.split('/')[0]
+        expt_name = model_run.split('/')[0].split('_')[0]
         table_data.append([expt_name, metrics['precision'], metrics['recall'], metrics['accuracy'], metrics['dice']])
 
         # model = get_model(model, model_run, vars(args))

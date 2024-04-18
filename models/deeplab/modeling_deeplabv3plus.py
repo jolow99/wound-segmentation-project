@@ -57,7 +57,6 @@ class DeepLabHead(nn.Module):
         x = self.bn(x)
         x = self.relu(x)
         x = self.last_conv(x)
-        x = self.sigmoid(x)
         return x
 
 

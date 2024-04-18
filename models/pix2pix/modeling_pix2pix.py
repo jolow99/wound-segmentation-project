@@ -8,9 +8,12 @@ import datetime
 from scripts.dataloader import DataGen, create_dataloaders
 from matplotlib import pyplot as plt
 import numpy as np
+from torch.utils.tensorboard import SummaryWriter 
+
+date = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+writer = SummaryWriter(f'runs/{date}')
 
 
-# Helper functions for the Generator
 def downsample(in_channels, out_channels, kernel_size, apply_batchnorm=True):
     layers = [nn.Conv2d(in_channels, out_channels, kernel_size, stride=2, padding=1, bias=not apply_batchnorm)]
     if apply_batchnorm:
@@ -22,7 +25,7 @@ def upsample(in_channels, out_channels, kernel_size, apply_dropout=False):
     layers = [nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=2, padding=1, bias=False)]
     layers.append(nn.BatchNorm2d(out_channels))
     if apply_dropout:
-        layers.append(nn.Dropout(0.5))
+        layers.append(nn.Dropout(0.7))
     layers.append(nn.ReLU())
     return nn.Sequential(*layers)
 
@@ -44,10 +47,11 @@ class Generator(nn.Module):
         # Final layer corrected to take 128 channels as input: 64 (up5 output) + 64 (initial input channels) = 128
         self.last = nn.Sequential(
             nn.ConvTranspose2d(128, 1, 4, stride=2, padding=1),  # Corrected to ensure the output has 3 channels
-            nn.Tanh()
+            # nn.Tanh()
+            nn.Sigmoid()
         )
 
-    
+
     def forward(self, x):
         d1 = self.down1(x)
         d2 = self.down2(d1)
@@ -82,7 +86,7 @@ class Discriminator(nn.Module):
 
         self.zero_pad2 = nn.ZeroPad2d(1)
         self.last = nn.Conv2d(512, 1, 4, stride=1)
-    
+
     def forward(self, input, target):
         x = torch.cat([input, target], dim=1)
         x = self.down1(x)
@@ -131,7 +135,7 @@ def discriminator_loss(disc_real_output, disc_fake_output):
 def train_step(generator, discriminator, input_image, target, optimizer_gen, optimizer_disc, lambda_l1=100):
     # Forward pass through the generator
     fake_image = generator(input_image)
-    
+
     # Discriminator output for real and fake images
     disc_real_output = discriminator(input_image, target)
     disc_fake_output = discriminator(input_image, fake_image.detach())  # Detach to avoid computing gradients through the generator
@@ -157,28 +161,28 @@ def fit(generator, discriminator, train_loader, valid_loader, optimizer_gen, opt
     # Move models to the target device
     generator.to(device)
     discriminator.to(device)
-    
+
     # For each epoch
     for epoch in range(epochs):
         generator.train()
         discriminator.train()
-        
+
         # Training loop
         for batch_idx, (input_image, target) in enumerate(train_loader):
             input_image, target = input_image.to(device), target.to(device)
-      
-            
+
+
             # Perform a training step
             gen_total_loss, gen_gan_loss, gen_l1_loss, disc_loss = train_step(
                 generator, discriminator, input_image, target, optimizer_gen, optimizer_disc, lambda_l1
             )
-            
+
             # Logging
             if batch_idx % 100 == 0:
                 print(f"Epoch [{epoch+1}/{epochs}] Batch {batch_idx}/{len(train_loader)}\n"
                       f"Loss D: {disc_loss.item()}, Loss G: {gen_total_loss.item()}, "
                       f"Loss G GAN: {gen_gan_loss.item()}, Loss G L1: {gen_l1_loss.item()}")
-        
+
         # Validation loop (optional, for example, save generated images for visual inspection)
         if valid_loader is not None:
             generator.eval()
@@ -188,27 +192,25 @@ def fit(generator, discriminator, train_loader, valid_loader, optimizer_gen, opt
                     fake_image = generator(input_image)
                     # Save or display images
                     save_image(fake_image, f"outputs/val_epoch_{epoch+1}.png", normalize=True)
-        
+
         # Save checkpoints
         if checkpoint_dir:
             if not os.path.exists(checkpoint_dir):
                 os.makedirs(checkpoint_dir)
             torch.save(generator.state_dict(), os.path.join(checkpoint_dir, f"generator_epoch_{epoch+1}.pth"))
             torch.save(discriminator.state_dict(), os.path.join(checkpoint_dir, f"discriminator_epoch_{epoch+1}.pth"))
-            
-        # Example of logging to TensorBoard (optional)
-        # Use `from torch.utils.tensorboard import SummaryWriter` to initialize a writer outside of this function.
-        # writer.add_scalar('Loss/Generator', gen_total_loss.item(), epoch)
-        # writer.add_scalar('Loss/Discriminator', disc_loss.item(), epoch)
 
-# Example usage
-dataloader = DataGen('/Users/jefflai/Desktop/ADL/wound-segmentation-project/data/wound_dataset/azh_wound_care_center_dataset_patches/',0.8, 224, 224, 'rgb')
-train_ds, valid_ds, test_ds = create_dataloaders(dataloader, 1, 'cpu')
+        writer.add_scalar('Loss/Generator', gen_total_loss.item(), epoch)
+        writer.add_scalar('Loss/Discriminator', disc_loss.item(), epoch)
+
+
+# dataloader = DataGen('/Users/jefflai/Desktop/ADL/wound-segmentation-project/data/wound_dataset/azh_wound_care_center_dataset_patches/',0.8, 224, 224, 'rgb')
+# train_ds, valid_ds, test_ds = create_dataloaders(dataloader, 16, 'cpu')
 # generator = Generator()
 # discriminator = Discriminator()
-# optimizer_gen = torch.optim.Adam(generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
-# optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=0.0002, betas=(0.5, 0.999))
-# fit(generator, discriminator, train_ds, valid_ds, optimizer_gen, optimizer_disc, 5, 'cpu', './training_checkpoints', 100)
+# optimizer_gen = torch.optim.Adam(generator.parameters(), lr=0.0005, betas=(0.5, 0.999))
+# optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=0.0005, betas=(0.5, 0.999))
+# fit(generator, discriminator, train_ds, valid_ds, optimizer_gen, optimizer_disc, 20, 'cpu', f'./training_checkpoints/{date}', 100)
 
 
 def generate_images(model, test_input, tar):
@@ -226,11 +228,11 @@ def generate_images(model, test_input, tar):
     plt.axis('off')
   plt.show()
 
-#load model 
-generator = Generator()
-generator.load_state_dict(torch.load('training_checkpoints/generator_epoch_3.pth'))
+# # load model 
+# generator = Generator()
+# generator.load_state_dict(torch.load('training_checkpoints/20240417-142253/generator_epoch_15.pth'))
 
-#load test data
-test_input, tar = next(iter(test_ds))
-generate_images(generator, test_input,tar)
+# # #load test data
+# test_input, tar = next(iter(test_ds))
+# generate_images(generator, test_input,tar)
 

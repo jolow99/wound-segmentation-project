@@ -4,10 +4,10 @@ import torch.nn as nn
 class SegNet(nn.Module):
     def __init__(self, config):
         super(SegNet, self).__init__()
-        self.n_filters = config.n_filters
+        n_filters = config.n_filters
         self.input_dim_x = config.input_dim_x
         self.input_dim_y = config.input_dim_y
-        self.num_channels = config.num_channels
+        num_channels = config.num_channels
 
         self.encoder_conv1 = nn.Conv2d(num_channels, n_filters, kernel_size=9, padding=4)
         self.encoder_conv2 = nn.Conv2d(n_filters, n_filters, kernel_size=5, padding=2)
@@ -44,6 +44,6 @@ class SegNet(nn.Module):
         decoder_conv6 = self.relu(self.decoder_conv6(self.upsample(conv5)))
         decoder_conv7 = self.relu(self.decoder_conv7(self.upsample(decoder_conv6)))
         decoder_conv8 = self.relu(self.decoder_conv8(self.upsample(decoder_conv7)))
-        decoder_conv9 = self.sigmoid(self.decoder_conv9(self.upsample(decoder_conv8)))
+        decoder_conv9 = self.decoder_conv9(self.upsample(decoder_conv8))
 
         return decoder_conv9

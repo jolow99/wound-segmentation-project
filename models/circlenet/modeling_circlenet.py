@@ -30,7 +30,6 @@ class UNet(nn.Module):
         n_filters = config.n_filters
         batch_norm = config.batch_norm
         dropout = config.dropout
-        print(batch_norm)
         
         self.inc = DoubleConv(n_channels, n_filters, batch_norm=batch_norm, dropout=dropout)
 
