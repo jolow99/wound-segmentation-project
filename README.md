@@ -27,6 +27,8 @@ pip install -r requirements.txt
 
 ## Replicate our results 
 Download weights from our [google drive checkpoints](https://drive.google.com/file/d/1yhBQPDkkxOVsdExH7EyhQeNTPtA7gfU2/view?usp=share_link) and replace checkpoints directory
+
+Compute the results from our project by running the following scripts:
 ```
 cd evaluation 
 python run_evaluation.py 
