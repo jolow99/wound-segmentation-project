@@ -59,13 +59,6 @@ class DeepLabHead(nn.Module):
         x = self.last_conv(x)
         return x
 
-
-
-# Assuming we are using output stride 16, we do not modify the backbone
-# However for output stride 8, we would need to apply modifications
-# to the backbone to have dilated convolutions in the last block
-
-# Construct the DeepLabV3+ model
 class DeepLabV3Plus(nn.Module):
     def __init__(self):
         super(DeepLabV3Plus, self).__init__()

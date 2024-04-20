@@ -14,11 +14,7 @@ from models.segnet.configuration_segnet import SegNetConfig
 from models.fcn.modeling_fcn import FCN_Vgg16_16s
 from models.segformer.configuration_segformer import SegformerConfig
 from models.segformer.modeling_segformer import SegFormer
-<<<<<<< HEAD
-from models.pix2pix.pix2pix import Generator
-=======
 from models.pix2pix.modeling_pix2pix import Generator
->>>>>>> d455b14 (feat:Consolidate scripts for our best models)
 
 #dont use _ for model names
 def get_model(model_name, config, device="cuda"): 

@@ -67,11 +67,11 @@ def evaluate_model_name(model_name, model_path, args):
         output = torch.stack([output, output, output], dim=0)
         # output = torch.nn.Sigmoid()(output)
         output = output.permute(1,2,0).detach().cpu().numpy()
-        output = (output > 0.5).astype(np.float32)
+        output = (output > 0.5).astype(np.int32)
         label = label.squeeze(0)
         label = torch.stack([label, label, label], dim=0)
         label = label.permute(1,2,0).detach().cpu().numpy()
-        output = np.concatenate([input, output, label], axis=1)
+        output = np.concatenate([input, label, output], axis=1)
         if not os.path.exists("/".join(filename.split('/')[:-1])):
             os.makedirs("/".join(filename.split('/')[:-1]))
         plt.imsave(filename, output)
@@ -101,7 +101,6 @@ if __name__ == "__main__":
     for model_run in model_runs: 
         print("Evaluating model: ", model_run)
         model_name = model_run.split('_')[0]
-        model_name = "pix2pix"
         metrics = evaluate_model_name(model_name, model_run, args)
         print(f'{model_name} metrics: {metrics}')
         expt_name = model_run.split('/')[0].split('_')[0]

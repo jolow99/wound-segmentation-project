@@ -73,9 +73,9 @@ class FCN_Vgg16_16s(nn.Module):
 
         # Convolutional layers transferred from fully-connected layers
         x = F.relu(self.fc1(x))  # Output size: 7x7
-        x = F.dropout(x, 0.5)
+        # x = F.dropout(x, 0.5)
         x = F.relu(self.fc2(x))  # Output size: 7x7
-        x = F.dropout(x, 0.5)
+        # x = F.dropout(x, 0.5)
 
         # Classifying layer
         x = self.classifier(x)  # Output size: 7x7
