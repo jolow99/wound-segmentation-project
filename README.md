@@ -25,6 +25,13 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
+## Replicate our results 
+Download weights from our [google drive checkpoints](https://drive.google.com/file/d/1yhBQPDkkxOVsdExH7EyhQeNTPtA7gfU2/view?usp=share_link) and replace checkpoints directory
+```
+cd evaluation 
+python run_evaluation.py 
+```
+
 ## Train model (python script)
 ```
 python train.py --model_name=unet
