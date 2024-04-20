@@ -126,34 +126,5 @@ class MixCircleNet(nn.Module):
 
     out = expert1_out * weights[:, 0].reshape(-1,1,1,1) + expert2_out * weights[:, 1].reshape(-1,1,1,1)
     out = self.ensemble_conv(out)
-    # out = torch.cat([expert1_out * weights[:, 0].reshape(-1,1,1,1), expert2_out * weights[:, 1].reshape(-1,1,1,1)], dim=1)
-    # out = self.ensemble_conv(out)
-
-    # ensemble_pred = torch.cat([pred1, pred2], dim=1)
-    # ensemble_pred = self.final_conv(ensemble_pred)
 
     return out
-
-# class EnsembleUNet(nn.Module):
-#     def __init__(self, config):
-#         super(EnsembleUNet, self).__init__()
-#         self.unet1 = UNet(config)
-#         self.unet2 = UNet(config)
-#         # self.final_conv = nn.Conv2d(config.n_classes * 2, config.n_classes, kernel_size=1)
-#         self.linear = nn.Linear(100352, 1*224*224) 
-
-#     def forward(self, x):
-#         pred1 = self.unet1(x)
-#         pred2 = self.unet2(x)
-#         ensemble_pred = torch.cat([pred1, pred2], dim=1)
-#         print(ensemble_pred.size())
-#         flat = nn.Flatten()(ensemble_pred)  # Flatten the output
-#         print(flat.size())
-#         print(self.linear)
-#         out = self.linear(flat)
-#         print(out.size())
-#         # out = self.final_conv(ensemble_pred)
-#         # ensemble_pred = self.linear(ensemble_pred)
-#         # out = einops.rearrange(ensemble_pred, 'b (c h w) -> b c h w', c=1, h=224, w=224)
-
-#         return out
